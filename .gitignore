@@ -1,0 +1,5 @@
+.DS_Store
+*_slow/
+convert.py
+*old/
+tmp/

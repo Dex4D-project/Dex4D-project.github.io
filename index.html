@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="Dex4D: Task-Agnostic Point Track Policy for Zero-Shot Dexterous Manipulation">
+  <meta name="keywords" content="Robot Learning, Humanoid Robots, Loco-Manipulation, Reinforcement Learning">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    Dex4D: Task-Agnostic Point Track Policy for Zero-Shot Dexterous Manipulation
+  </title>
+
+  <link rel="icon" type="image/svg" href="./static/images/logo.svg" />
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <!-- <script src="https://kit.fontawesome.com/19914a84eb.js" crossorigin="anonymous"></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+
+<body>
+<section class="hero is-link is-fullheight video" style="overflow: hidden; position:relative;">
+  <div class="hero-video" style="height: 100%; width: 177.77777778vh; min-width: 100%;min-height: 56.25vw;">
+    <video playsinline autoplay muted loop>
+      <source src="./static/videos/dex4d_real_world_generalization_grid_4x4_looped.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="is-hidden-tablet"
+    style="display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh; background-color: black; left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);">
+    <video playsinline autoplay muted loop style="width: 90%; height: auto; min-height: 100%;">
+      <source src="./static/videos/dex4d_real_world_generalization_grid_5x3_mobile_looped.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="overlay"></div>
+
+
+  <!-- Hero content: will be in the middle -->
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title is-1 publication-title is-size-1-mobile" style="font-size: 12rem;">
+        Dex4D
+      </h1>
+      <h1 class="subtitle is-1 publication-title is-size-3-mobile" style="font-size: 4rem;">
+        Task-Agnostic Point Track Policy for<br>Zero-Shot Dexterous Manipulation
+      </h1>
+      <h1 class="is-2 is-italic is-size-4-mobile" style="font-size: 2rem; opacity: 80%;">
+        Anonymous Submission
+      </h1>
+    </div>
+  </div>
+
+  <!-- Hero footer: will stick at the bottom -->
+  <div class="hero-foot">
+    <nav class="tabs is-boxed is-fullwidth is-size-5">
+      <ul>
+        <li><a href="#video">Summary Video</a></li>
+        <li><a href="#policy">Task-Agnostic Point Track Policy</a></li>
+        <li><a href="#planner">Video Planner and Deployment</a></li>
+        <li><a href="#demo">Zero-Shot Dexterous Manipulation</a></li>
+        <!-- <li><a href="#qa">Q & A</a></li> -->
+      </ul>
+    </nav>
+  </div>
+</section>
+
+
+<section class="section is-small has-background-black" id="video">
+  <div class="container is-max-desktop">
+    <h2 class="title is-1 has-text-centered has-text-white is-size-3-mobile">Summary Video</h2>
+    <video controls width="100%">
+      <source src="./static/videos/Dex4D_summary_video.mp4" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+
+
+<section class="section is-small" id="overview">
+  <div class="container is-max-desktop">
+    <h2 class="title is-1 has-text-centered is-size-3-mobile">Overview</h2>
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr); gap:0.6rem; align-items:center;">
+      <div class="has-text-centered">
+        <a href="#policy" class="button is-danger is-small is-rounded" style="margin-bottom:0.5rem; font-size:1rem; width:280px; max-width:100%; white-space:normal; height:auto; line-height:1.25; padding-top:0.45rem; padding-bottom:0.45rem;">🦾 Task-Agnostic Policy</a>
+      </div>
+      <div class="has-text-weight-bold" style="font-size:1.5rem; line-height:1;">+</div>
+      <div class="has-text-centered">
+        <a href="#planner" class="button is-info is-small is-rounded" style="margin-bottom:0.5rem; font-size:1rem; width:280px; max-width:100%; white-space:normal; height:auto; line-height:1.25; padding-top:0.45rem; padding-bottom:0.45rem;">🧠 Generalizable Planner</a>
+      </div>
+      <div class="has-text-weight-bold" style="font-size:1.5rem; line-height:1;">=</div>
+      <div class="has-text-centered">
+        <a href="#demo" class="button is-success is-small is-rounded" style="margin-bottom:0.5rem; font-size:1rem; width:280px; max-width:100%; white-space:normal; height:auto; line-height:1.25; padding-top:0.45rem; padding-bottom:0.45rem;">🎯 Generalizable Dexterous Manipulation</a>
+      </div>
+
+      <div class="has-text-centered">
+        <video autoplay muted loop playsinline controls src="static/videos/task-agnostic.mp4" style="width:100%; max-width:280px; height:180px; object-fit:cover; border-radius:10px;"></video>
+      </div>
+      <div></div>
+      <div class="has-text-centered">
+        <video autoplay muted loop playsinline controls src="static/videos/video-4d.mp4" style="width:100%; max-width:280px; height:180px; object-fit:cover; border-radius:10px;"></video>
+      </div>
+      <div></div>
+      <div class="has-text-centered">
+        <video autoplay muted loop playsinline controls src="static/videos/generalization/mixed.mp4" style="width:100%; max-width:280px; height:180px; object-fit:cover; border-radius:10px;"></video>
+      </div>
+
+      <div class="has-text-centered has-text-weight-semibold" style="font-size:0.95rem; margin-top:0.35rem;">
+        Anypose-to-Anypose Point Track Policy<br>Learned in Simulation
+      </div>
+      <div></div>
+      <div class="has-text-centered has-text-weight-semibold" style="font-size:0.95rem; margin-top:0.35rem;">
+        Video Generation and 4D Reconstruction<br>as High-Level Planner
+      </div>
+      <div></div>
+      <div class="has-text-centered has-text-weight-semibold" style="font-size:0.95rem; margin-top:0.35rem;">
+        Generalizable Deployment to Diverse<br>Real-World Tasks
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section is-small" id="policy">
+  <div class="container is-max-desktop">
+    <h2 class="title is-1 has-text-centered is-size-3-mobile">Task-Agnostic Point Track Policy</h2>
+    <h2 class="title is-3 is-size-4-mobile">Task-Agnostic Sim-to-Real via Anypose-to-Anypose</h2>
+    <div style="background:#e8f3ff; border:1px solid #b9d5ff; border-radius:12px; padding:1rem; box-shadow:0 10px 24px rgba(132,10,32,0.12);">
+      <p class="has-text-centered has-text-weight-semibold" style="margin:-0.5rem auto 0.1rem auto; display:block; width:max-content; padding:0.5rem; font-size:1.5rem;">
+        interactive viewer 🕹️
+      </p>
+      <div class="columns is-variable is-5">
+        <div class="column is-two-thirds">
+          <div class="has-text-centered">
+            <iframe id="ap2ap-visor" allowfullscreen loading="lazy"
+              src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-5.viser"
+              style="width: 100%; height: 520px; border: none; border-radius: 10px; background-color: #000;"
+              title="AP2AP">
+            </iframe>
+            <div id="ap2ap-label" class="has-text-weight-semibold" style="margin-top:0.5rem;">ToyFigure</div>
+          </div>
+        </div>
+        <div class="column">
+          <div style="display:flex; flex-direction:column; gap:0.5rem;">
+            <button type="button" aria-label="Scroll up"
+              style="border:none; background:rgba(0,0,0,0.55); color:white; width:2.5rem; height:2.5rem; border-radius:999px; cursor:pointer; font-size:1.2rem; line-height:2.5rem; text-align:center; align-self:center;"
+              onclick="scrollAp2apList(-1)">↑</button>
+            <div id="ap2ap-button-list" style="max-height:430px; overflow-y:auto; display:flex; flex-direction:column; gap:0.5rem;">
+            <button class="button ap2ap-source-btn is-link is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-5.viser" onclick="setAp2apSrc(this)">ToyFigure</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-12.viser" onclick="setAp2apSrc(this)">Bottle</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-0.viser" onclick="setAp2apSrc(this)">DrinkingUtensil</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-13.viser" onclick="setAp2apSrc(this)">Bottle</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-2.viser" onclick="setAp2apSrc(this)">Mug</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-23.viser" onclick="setAp2apSrc(this)">Cellphone</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-31.viser" onclick="setAp2apSrc(this)">DrinkingUtensil</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-19.viser" onclick="setAp2apSrc(this)">Bottle</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-35.viser" onclick="setAp2apSrc(this)">VideoGameController</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-43.viser" onclick="setAp2apSrc(this)">Bird</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-3.viser" onclick="setAp2apSrc(this)">Bottle</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-37.viser" onclick="setAp2apSrc(this)">Jar</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-46.viser" onclick="setAp2apSrc(this)">FoodItem</button>
+            <button class="button ap2ap-source-btn is-light" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/AP2AP/env-48.viser" onclick="setAp2apSrc(this)">Candle</button>
+            </div>
+            <button type="button" aria-label="Scroll down"
+              style="border:none; background:rgba(0,0,0,0.55); color:white; width:2.5rem; height:2.5rem; border-radius:999px; cursor:pointer; font-size:1.2rem; line-height:2.5rem; text-align:center; align-self:center;"
+              onclick="scrollAp2apList(1)">↓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="content">
+      <p>
+        We propose <b>Anypose-to-Anypose (AP2AP)</b>, a task-agnostic sim-to-real learning formulation for dexterous manipulation. AP2AP abstracts manipulation as directly transforming an object from an arbitrary initial pose to an arbitrary target pose in 3D space, without assuming task-specific structure, predefined grasps, or motion primitives. Conditioned on <b>point tracks</b>, we train our AP2AP policy on over <b>3,000</b> objects in simulation, and directly deploy the learned policy to real-world dexterous manipulation tasks without any real-robot data collection or policy fine-tuning.
+      </p>
+    </div>
+    <br><br>
+    <h2 class="title is-3 is-size-4-mobile">Paired Point Encoding</h2>
+    <div class="has-text-centered">
+      <img src="./static/images/representation.png" alt="framework" style="max-width:100%; height:auto; max-height:420px; object-fit:contain;" />
+    </div>
+    <div class="content">
+      <p>
+        Comparison between our <b>Paired Point Encoding</b> with other representations. Point features encoded from our Paired Point Encoding keep <b>correspondence</b> and <b>permutation-invariance</b> of the current and target object points, which shows better performance for policy learning.
+      </p>
+    </div>
+    <br>
+    <h2 class="title is-3 is-size-4-mobile">Teacher-Student Policy Learning</h2>
+    <div class="has-text-centered">
+      <img src="./static/images/pipeline.png" alt="framework" style="max-width:100%; height:auto; max-height:420px; object-fit:contain;" />
+    </div>
+    <div class="content">
+      <p>
+        Overview of our Dex4D teacher and student network architectures. <b>(a)</b> We first learn a teacher policy via RL with privileged states and full points sampled on the whole object, leveraging our proposed <b>Paired Point Encoding</b> representation. <b>(b)</b> Given partial observation, i.e., robot proprioception, last action, and masked paired points, we distill from the teacher and learn a <b>transformer-based student dynamics action model</b> that jointly predicts actions and future robot states.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section is-small" id="planner">
+  <div class="container is-max-desktop">
+    <h2 class="title is-1 has-text-centered is-size-3-mobile">Video Planner and Deployment</h2>
+    <h2 class="title is-3 is-size-4-mobile">Video Generation & 4D Reconstruction as High-Level Planner</h2>
+    <h3 class="title is-5 is-size-6-mobile has-text-centered"><i>"Put the broccoli 🥦 on the plate 🍽."</i></h3>
+    <div class="columns is-variable is-4 is-vcentered" style="margin-bottom:1.25rem;">
+      <div class="column">
+        <figure class="has-text-centered">
+          <video autoplay muted loop playsinline controls src="static/videos/videogen/generated_video.mp4" style="width:100%; border-radius:10px;"></video>
+          <figcaption class="has-text-weight-semibold" style="margin-top:0.5rem;">
+            Video Generation
+          </figcaption>
+          <figcaption class="has-text-weight-semibold" style="margin-top:0.5rem; font-size:2rem;">
+            ↘️
+          </figcaption>
+        </figure>
+      </div>
+      <div class="column">
+        <figure class="has-text-centered">
+          <video autoplay muted loop playsinline controls src="static/videos/videogen/depth.mp4" style="width:100%; border-radius:10px;"></video>
+          <figcaption class="has-text-weight-semibold" style="margin-top:0.5rem;">
+            Relative Depth Estimation
+          </figcaption>
+          <figcaption class="has-text-weight-semibold" style="margin-top:0.5rem; font-size:2rem;">
+            ⬇️
+          </figcaption>
+        </figure>
+      </div>
+      <div class="column">
+        <figure class="has-text-centered">
+          <video autoplay muted loop playsinline controls src="static/videos/videogen/track.mp4" style="width:100%; border-radius:10px;"></video>
+          <figcaption class="has-text-weight-semibold" style="margin-top:0.5rem;">
+            Point Tracking
+          </figcaption>
+          <figcaption class="has-text-weight-semibold" style="margin-top:0.5rem; font-size:2rem;">
+             ↙️
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="has-text-centered">
+      <figure style="position:relative;">
+          <iframe id="planner-visor" allowfullscreen="" loading="lazy" data-src="https://dex4d-project.github.io/Dex4D-project-Viser/viser-client/?playbackPath=https://dex4d-project.github.io/Dex4D-project-Viser/videogen/0121-bcl-plate.viser&initialCameraPosition=-0.002,-0.316,-0.265&initialCameraLookAt=-0.001,-0.124,0.073&initialCameraUp=-0.000,0.000,1.000&initialCameraFov=1.3090&initialCameraNear=0.01&initialCameraFar=1000" style="width: 100%; height: 500px; border: none; border-radius: 10px; background-color: #000;" title="object-centric-point-tracks"></iframe>
+          <button id="planner-visor-mobile-btn" type="button"
+            class="button is-warning is-medium is-rounded is-hidden-tablet"
+            style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:3; margin-bottom:0.5rem; font-size:1rem; width:280px; max-width:100%; white-space:normal; height:auto; line-height:1.25; padding-top:0.45rem; padding-bottom:0.45rem;"
+            onclick="loadPlannerViserMobile(this)">
+            Load Interactive Viewer
+            <br>
+            (This may take high resource on mobile devices)
+          </button>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Object-Centric Target Point Tracks (interactive viewer 🕹️)</figcaption>
+        </figure>
+    </div>
+    <br>
+    <div style="background:#fdecef; border:1px solid #c41230; border-radius:12px; padding:1rem; box-shadow:0 10px 24px rgba(132,10,32,0.12); color:#2b2b2b;">
+      <div class="content">
+        <p>
+          Aside from using video generation to extract target object point tracks, such point tracks can also be obtained from diverse data sources, such as <b>one-shot human video demonstrations</b> or <b>3D point cloud forecast models</b>.
+        </p>
+      </div>
+    </div>
+    <br>
+    <h2 class="title is-3 is-size-4-mobile">Real-Time Point Tracking</h2>
+    <div class="columns is-variable is-4 is-vcentered" style="margin-bottom:1.25rem;">
+      <div class="column">
+        <figure class="has-text-centered">
+          <video autoplay muted loop playsinline controls src="static/videos/real-time-tracking/real-time-tracking-1.mp4" style="width: 70%; border-radius:10px;"></video>
+          <!-- <figcaption class="has-text-weight-semibold" style="margin-top:0.5rem;"></figcaption> -->
+        </figure>
+      </div>
+    </div>
+    <div class="content">
+      <p>
+        We also develop a <b>real-time sparse point tracker</b> on top of CoTracker for perception for test-time deployment. The tracker takes in the first frame of the generated video as well as the initially tracked query points, and tracks the object points in real-time during execution. The tracked points can be directly used by our Dex4D policy for <b>closed-loop</b> control.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section is-small" id="demo">
+  <div class="container is-max-desktop">
+    <h2 class="title is-1 has-text-centered is-size-3-mobile">Zero-Shot Dexterous Manipulation</h2>
+    <p class="has-text-centered" style="margin:-0.5rem auto 1.25rem auto; color:#1a5d1a; background:#e6f6e6; border:1px solid #c5e6c5; border-radius:10px; display:block; width:max-content; padding:0.55rem 1rem; font-size:1.5rem; box-shadow:0 10px 24px rgba(46,109,191,0.12); max-width:100%; height:auto;">
+      <b>Autonomous</b>, 2x
+      <br>
+      <!-- Object Mesh <b>Not Known</b>
+      <br> -->
+      One <b>Single</b> Policy for <b>All Tasks</b>
+      <br>
+      <b>Zero</b> Real-Robot Demonstration
+      <br>
+      <b>Everything</b> (except the robot) is <b>unseen</b> to the policy
+    </p>
+    <h2 class="title is-3 is-size-4-mobile">Task Gallery</h2>
+    <div style="background:#e8f3ff; border:1px solid #b9d5ff; border-radius:12px; padding:1rem; box-shadow:0 10px 24px rgba(46,109,191,0.12);">
+    <p class="has-text-centered has-text-weight-semibold" style="margin:-0.5rem auto 0.1rem auto; display:block; width:max-content; padding:0.5rem; font-size:1.5rem;">
+      scroll down to see more ⬇️
+    </p>
+    <div id="rw-gallery-scroller" style="display:flex; gap:0.5rem; align-items:center;">
+    <div class="demo-vertical" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; max-height:960px; overflow-y:auto; padding:0.25rem; flex:1 1 auto;">
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/broccoli2plate.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Broccoli2Plate</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/lift_toy_dino.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">LiftToy (Dino)</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/pour.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Pour</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/stackcup.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">StackCup</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/insertcarrot.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">InsertCarrot</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/unplug.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Unplug</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/meat2bowl.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Meat2Bowl</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/inserttennisball.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">InsertTennisBall</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/carrot2rabbit.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Carrot2Rabbit</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/apple2bowl.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Apple2Bowl</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/grabfootball.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">GrabFootball</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/lift_toy_sloth.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">LiftToy (Sloth)</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/lift_toy_owl.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">LiftToy (Owl)</figcaption>
+        </figure>
+      </div>
+      <div data-card>
+        <figure>
+          <video autoplay muted loop playsinline controls src="static/videos/real-world-demos/lift_toy_rabbit.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">LiftToy (Rabbit)</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:3rem; justify-content:center;">
+      <button type="button" aria-label="Scroll gallery up"
+        style="border:none; background:rgba(0,0,0,0.55); color:white; width:2.5rem; height:2.5rem; border-radius:999px; cursor:pointer; font-size:1.2rem; line-height:2.5rem; text-align:center;"
+        onclick="scrollGalleryByCard(this,-1)">↑</button>
+      <button type="button" aria-label="Scroll gallery down"
+        style="border:none; background:rgba(0,0,0,0.55); color:white; width:2.5rem; height:2.5rem; border-radius:999px; cursor:pointer; font-size:1.2rem; line-height:2.5rem; text-align:center;"
+        onclick="scrollGalleryByCard(this,1)">↓</button>
+    </div>
+    </div>
+    </div>
+    <br><br>
+    
+    <h2 class="title is-3 is-size-4-mobile">Comparison with Motion Planning Baseline</h2>
+    <div style="background:#ffe8f0; border:1px solid #f5b6c8; border-radius:12px; padding:1rem; box-shadow:0 10px 24px rgba(225,105,140,0.16);">
+    <h3 class="title is-5 is-size-6-mobile has-text-centered">Task: LiftToy</h3>
+    <br>
+    <div class="columns is-centered">
+      <div class="columns is-centered has-text-centered">
+        <figure>
+        <video autoplay muted loop playsinline controls src="static/videos/comparison-with-baseline/lifttoy-ours.mp4" width="90%"
+              style="border-radius:10px; "></video>
+        <figcaption><b>Ours</b> ✅</figcaption>
+        </figure>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <figure>
+        <video autoplay muted loop playsinline controls src="static/videos/comparison-with-baseline/lifttoy-baseline.mp4" width="90%"
+              style="border-radius:10px; "></video>
+        <figcaption>Baseline ❌</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="content">
+      <p>
+        The baseline is <b>unaware</b> of the hand and object grasping. Therefore the object would gradually fall off the hand during arm moving due to the lack of feedback. In contrast, our method has <b>hand reactivity</b> and learns to adjust or regrasp the object and proceeds with the task.
+      </p>
+    </div>
+    <h3 class="title is-5 is-size-6-mobile has-text-centered">Task: Pour</h3>
+    <br>
+    <div class="columns is-centered">
+      <div class="columns is-centered has-text-centered">
+        <figure>
+        <video autoplay muted loop playsinline controls src="static/videos/comparison-with-baseline/pour-ours.mp4" width="90%"
+              style="border-radius:10px; "></video>
+        <figcaption><b>Ours</b> ✅</figcaption>
+        </figure>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <figure>
+        <video autoplay muted loop playsinline controls src="static/videos/comparison-with-baseline/pour-baseline.mp4" width="90%"
+              style="border-radius:10px; "></video>
+        <figcaption>Baseline ❌</figcaption>
+        </figure>
+      </div>
+    </div>
+    <div class="content">
+      <p>
+        The baseline is very <b>vulnerable</b> to few and noisy visible points, while our method performs <b>robustly</b> even if there are less than 10 visible object points left due to extensive simulation training.
+      </p>
+    </div>
+    </div>
+    <br><br>
+
+    <h2 class="title is-3 is-size-4-mobile">Strong Zero-Shot Generalization</h2>
+    <div style="background:#e8f3ff; border:1px solid #b9d5ff; border-radius:12px; padding:1rem; box-shadow:0 8px 18px rgba(46,109,191,0.08); margin-top:0.75rem;">
+    <div style="position:relative; display:flex; align-items:center; gap:0.5rem; margin-top:0.25rem;">
+      <button type="button" aria-label="Scroll left"
+        style="border:none; background:rgba(0,0,0,0.55); color:white; width:2.5rem; height:2.5rem; border-radius:999px; cursor:pointer; font-size:1.3rem; line-height:2.5rem; text-align:center; flex:0 0 auto;"
+        onclick="const scrollEl=this.parentElement.querySelector('.generalization-scroll'); const row=scrollEl.querySelector('.generalization-row'); const card=row?.querySelector('[data-card]'); const gap=parseFloat(getComputedStyle(row).columnGap||getComputedStyle(row).gap||0) || 0; const amount=(card?.getBoundingClientRect().width||0)+gap; scrollEl.scrollBy({left:-amount, behavior:'smooth'});">←</button>
+      <div class="generalization-scroll" style="overflow-x:auto; padding:1rem 0; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; flex:1 1 auto;">
+        <div class="generalization-row" style="display:flex; gap:1rem; flex-wrap:nowrap;">
+          <div data-card style="flex:0 0 calc(50% - 0.75rem); min-width:360px; max-width:560px;">
+            <figure>
+              <video autoplay muted loop playsinline controls src="static/videos/generalization/bg_camera.mp4" style="width:100%; border-radius:10px;"></video>
+              <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Background & Camera</figcaption>
+            </figure>
+          </div>
+          <div data-card style="flex:0 0 calc(50% - 0.75rem); min-width:360px; max-width:560px;">
+            <figure>
+              <video autoplay muted loop playsinline controls src="static/videos/generalization/distractors.mp4" style="width:100%; border-radius:10px;"></video>
+              <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Distractors</figcaption>
+            </figure>
+          </div>
+          <div data-card style="flex:0 0 calc(50% - 0.75rem); min-width:360px; max-width:560px;">
+            <figure>
+              <video autoplay muted loop playsinline controls src="static/videos/generalization/obj_task.mp4" style="width:100%; border-radius:10px;"></video>
+              <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Objects & Tasks</figcaption>
+            </figure>
+          </div>
+          <div data-card style="flex:0 0 calc(50% - 0.75rem); min-width:360px; max-width:560px;">
+            <figure>
+              <video autoplay muted loop playsinline controls src="static/videos/generalization/perturbation.mp4" style="width:100%; border-radius:10px;"></video>
+              <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Perturbation</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+      <button type="button" aria-label="Scroll right"
+        style="border:none; background:rgba(0,0,0,0.55); color:white; width:2.5rem; height:2.5rem; border-radius:999px; cursor:pointer; font-size:1.3rem; line-height:2.5rem; text-align:center; flex:0 0 auto;"
+        onclick="const scrollEl=this.parentElement.querySelector('.generalization-scroll'); const row=scrollEl.querySelector('.generalization-row'); const card=row?.querySelector('[data-card]'); const gap=parseFloat(getComputedStyle(row).columnGap||getComputedStyle(row).gap||0) || 0; const amount=(card?.getBoundingClientRect().width||0)+gap; scrollEl.scrollBy({left:amount, behavior:'smooth'});">→</button>
+    </div>
+    <div class="content" style="margin-top:1.5rem; margin-left:3rem; margin-right:3rem;">
+      <p>
+        We demonstrate strong generalization to unseen object types and poses, backgrounds, camera views, task trajectories, and external disturbances.
+      </p>
+    </div>
+    </div>
+    <!-- <br>
+    <div class="has-text-centered" style="margin-top:1rem;">
+      <figure style="display:inline-block;">
+        <video id="generalization-mixed-video" muted playsinline controls src="static/videos/generalization/mixed.mp4" style="width:90%; border-radius:10px;"></video>
+      </figure>
+    </div> -->
+    <br><br>
+
+    <h2 class="title is-3 is-size-4-mobile">Dexterity in In-Hand and Non-Prehensile Manipulation</h2>
+    <div style="background:#e8f3ff; border:1px solid #b9d5ff; border-radius:12px; padding:1rem; box-shadow:0 8px 18px rgba(46,109,191,0.08); margin-top:0.75rem;">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <figure>
+            <video autoplay muted loop playsinline controls src="static/videos/dexterity/in_hand_compressed.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+            <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">In-Hand Manipulation</figcaption>
+          </figure>
+        </div>
+        <div class="column has-text-centered">
+          <figure>
+            <video autoplay muted loop playsinline controls src="static/videos/dexterity/non_prehensile_compressed.mp4" style="width:100%; aspect-ratio:16/9; border-radius:10px; display:block;"></video>
+            <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">Non-Prehensile Manipulation</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="content" style="margin-top:1rem; margin-left:3rem; margin-right:3rem;">
+        <p>
+          Dex4D exhibits dexterous behavior beyond pick-and-place tasks, including in-hand object reorientation and non-prehensile interactions.
+        </p>
+      </div>
+    </div>
+    <br><br>
+
+    <h2 class="title is-3 is-size-4-mobile">Seamless Transfer to Different Embodiments</h2>
+    <div style="background:#e8f3ff; border:1px solid #b9d5ff; border-radius:12px; padding:1rem; box-shadow:0 8px 18px rgba(46,109,191,0.08); margin-top:0.75rem;">
+      <div class="has-text-centered">
+        <figure style="display:inline-block; width:70%;">
+          <video autoplay muted loop playsinline controls src="static/videos/xhand_compressed.mp4" style="width:100%; border-radius:10px; display:block;"></video>
+          <figcaption class="has-text-centered has-text-weight-semibold" style="margin-top:0.5rem;">XHand Transfer</figcaption>
+        </figure>
+      </div>
+      <div class="content" style="margin-top:1rem; margin-left:3rem; margin-right:3rem;">
+        <p>
+          With the same simulation setting (reward, curriculum, etc.), the training can be seamlessly transferred to the XHand, demonstrating that our AP2AP training recipe is not tied to a single dexterous hand embodiment.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+  (function() {
+    const vid = document.getElementById('generalization-mixed-video');
+    if (!vid) return;
+    vid.loop = false;
+    vid.autoplay = false;
+    const playIfVisible = (entry) => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+        vid.play().catch(() => {});
+      } else {
+        vid.pause();
+      }
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(playIfVisible);
+    }, { threshold: [0, 0.5, 1] });
+    observer.observe(vid);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) vid.pause();
+    });
+  })();
+
+  (function() {
+    const iframe = document.getElementById('planner-visor');
+    if (!iframe) return;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) {
+      iframe.style.height = '200px';
+      iframe.removeAttribute('src');
+    } else {
+      iframe.src = iframe.dataset.src;
+    }
+  })();
+
+  function loadPlannerViserMobile(btn) {
+    const iframe = document.getElementById('planner-visor');
+    if (!iframe || !iframe.dataset.src) return;
+    iframe.src = iframe.dataset.src;
+    if (btn) btn.style.display = 'none';
+  }
+
+  function setAp2apSrc(btn) {
+    const iframe = document.getElementById('ap2ap-visor');
+    if (!iframe) return;
+    const src = btn.dataset.src;
+    if (src) iframe.src = src;
+    const label = document.getElementById('ap2ap-label');
+    if (label) label.textContent = btn.textContent.trim();
+    document.querySelectorAll('.ap2ap-source-btn').forEach(b => {
+      b.classList.remove('is-link');
+    });
+    btn.classList.add('is-link');
+  }
+
+  function scrollAp2apList(direction) {
+    const list = document.getElementById('ap2ap-button-list');
+    if (!list) return;
+    const item = list.querySelector('.ap2ap-source-btn');
+    if (!item) return;
+    const itemStyle = getComputedStyle(item);
+    const listStyle = getComputedStyle(list);
+    const rowGap = parseFloat(listStyle.rowGap || listStyle.gap || 0) || 0;
+    const step = item.getBoundingClientRect().height +
+      (parseFloat(itemStyle.marginTop || 0) || 0) +
+      (parseFloat(itemStyle.marginBottom || 0) || 0) +
+      rowGap;
+    list.scrollBy({ top: step * direction, behavior: 'smooth' });
+  }
+
+  function scrollGalleryByCard(btn, direction) {
+    const wrapper = btn.closest('#rw-gallery-scroller');
+    if (!wrapper) return;
+    const container = wrapper.querySelector('.demo-vertical');
+    if (!container) return;
+    const card = container.querySelector('[data-card]');
+    if (!card) return;
+    const containerStyle = getComputedStyle(container);
+    const gap = parseFloat(containerStyle.rowGap || containerStyle.gap || 0) || 0;
+    const step = card.getBoundingClientRect().height + gap;
+    container.scrollBy({ top: step * direction, behavior: 'smooth' });
+  }
+</script>
+
+
+</body>
+
+</html>
